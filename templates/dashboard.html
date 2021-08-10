@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dashboard</title>
+
+	<style type="text/css">
+		.button {
+		    display: inline-block;
+		    width: 130px;
+		    height: 20px;
+		    background: #4E9CAF;
+		    padding: 10px;
+		    text-align: center;
+		    border-radius: 5px;
+		    color: white;
+		    font-weight: bold;
+		    margin-left: 24px
+		}
+		.main-button{
+			margin: 10px;
+			margin-top: 5%; 
+		}
+		table{
+			border-collapse: collapse;
+		}
+		th{
+			padding: 20px;
+			background: #91bde0;
+		}
+		td{
+			padding: 20px;
+		}
+
+	</style>
+
+
+</head>
+<body>
+
+	<div class="main-button" align="center">
+		<a class="button">Add a new bill</a>
+		<a class="button" href="{% url 'manage_bills' %}?filter_type=pending">Show pending bill</a>
+		<a class="button" href="{% url 'manage_bills' %}?filter_type=collected">Show collected bill</a>
+	</div>
+
+	<table border="1px solid black">
+		<tr>
+			<th> Reference </th>
+			<th> Invoice Date</th>
+			<th> Customer </th>
+			<th> Brand Manager</th>
+			<th> Narration </th>
+			<th> Amount </th>
+			<th> Total collection</th>
+			<th> Balance Due</th>
+			<th> Button to add Collection</th>
+		</tr>
+		{% for row in data %}
+		<tr>
+			<td> {{row.reference}} </td>
+			<td> {{row.invoice_date}} </td>
+			<td> {{row.customer_name}} </td>
+			<td> {{row.brand_manager}}</td>
+			<td> {{row.narration}} </td>
+			<td> {{row.amount}} </td>
+			<td> {% if not row.total_amount %}- {% else %}{{row.total_amount}}{% endif %} </td>
+			<td> {% if not row.balance_amount %}- {% else %}{{row.balance_amount}}{% endif %} </td>
+			<td><a class="button" href="{% url 'add_collection' pk=row.id %}">Add collection </a>  </td>
+		</tr>
+		{% endfor %}
+	</table>
+
+ <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+        {% if data.has_previous %}
+            <li class="page-item">
+            <a class="page-link" href="?page={{ data.previous_page_number }}">Previous</a>
+          </li>
+        {% else %}
+            <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+          </li>
+        {% endif %}
+
+        {% if data.number|add:'-4' > 1 %}
+            <li class="page-item"><a class="page-link" href="?page={{ data.number|add:'-5' }}">&hellip;</a></li>
+        {% endif %}
+
+        {% for i in data.paginator.page_range %}
+            {% if data.number == i %}
+                <li class="page-item active" aria-current="page">
+              <span class="page-link">
+                {{ i }}
+                <span class="sr-only">(current)</span>
+              </span>
+            </li>
+            {% elif i > data.number|add:'-5' and i < data.number|add:'5' %}
+                 <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if data.paginator.num_pages > data.number|add:'4' %}
+           <li class="page-item"><a class="page-link" href="?page={{ data.number|add:'5' }}">&hellip;</a></li>
+        {% endif %}
+
+        {% if data.has_next %}
+            <li class="page-item">
+            <a class="page-link" href="?page={{ data.next_page_number }}">Next</a>
+          </li>
+        {% else %}
+            <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+    <!--end of Pagination-->
+
+
+
+    <!-- Optional Javascript -->
+    
+</body>
+</html>

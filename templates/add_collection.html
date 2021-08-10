@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Add Collection</title>
+</head>
+<body>
+	<h1>Collection Form</h1>
+	<form method="post">
+		{% csrf_token %}
+		{{form.as_p}}
+		<input type="submit" name="submit">
+	</form>
+		
+</body>
+</html>
